@@ -1,0 +1,885 @@
+openapi: "3.0.0"
+info:
+  title: DoCMS API
+  description: Solusi untuk seluruh kontenmu
+  version: v1.0.0
+  contact:
+    email: docms@gmail.com
+  liscence:
+    name: Apache 2.0
+    url: "http://www.apache.org/liscences/LIS"
+  servers:
+    -url: http://localhost:3500
+    description: Backend server
+    -url: http://example.com/
+    description: This is my original URL
+
+# Sections from each API
+tags:
+  - name: Authentication
+    description: Authentication API
+  - name: Users
+    description: Users API
+  - name: Documentations
+    description: Documentation API
+  - name: Chapters
+    description: Chapter API
+  - name: Sections
+    description: Section API
+  - name: Versionings
+    description: Versioning API
+
+
+components:
+  # Bearer Token Authentication  
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+
+  # Schemas Database Configuration  
+  schemas:
+    loginAuthentication:
+      type: object
+      required:
+        - user
+        - pwd
+      properties:
+        user:
+          type: string
+          description: username for authentication purposes
+        pwd:
+          type: string
+          description: password for authentication purposes
+
+    registerAuthentication:
+      type: object
+      required:
+        - username
+        - firstname
+        - lastname
+        - email
+        - password
+      properties:
+        username:
+          type: string
+          description: username for authentication purposes
+        password:
+          type: string
+          description: password for authentication purposes
+        firstname:
+          type: string
+          description: firstname for authentication purposes
+        lastname:
+          type: string
+          description: lastname for authentication purposes
+        email:
+          type: string
+          description: email for authentication purposes
+
+    Documentation: 
+      type: object
+      required:
+        - title
+        - logo
+        - description
+        - logoLink
+        - footer
+        - content
+        - createdAt
+        - updatedAt
+      properties:
+        title:
+          type: string
+          description: documentation title
+        logo:
+          type: string
+          description: documentation logo
+        description:
+          type: string
+          description: documentation description
+        logoLink:
+          type: object
+          description: documentation logoLink
+        footer:
+          type: string
+          description: documentation footer
+        content:
+          type: object
+          description: documentation content
+        createdAt:
+          type: object
+          description: documentation createdAt
+        updatedAt:
+          type: object
+          description: documentation updatedAt
+    
+
+    Chapter:
+      type: object
+      required:
+        - title
+        - version
+        - createdAt
+        - updatedAt
+      properties:
+        title:
+          type: string
+          description: chapter title
+        version:
+          type: string
+          description: chapter version
+        createdAt:
+          type: string
+          description: chapter createdAt
+        updatedAt:
+          type: string
+          description: chapter updatedAt
+
+    Section:
+      type: object
+      required:
+        - title
+        - content
+        - version
+        - createdAt
+        - updatedAt
+      properties:
+        title:
+          type: string
+          description: section title
+        content:
+          type: string
+          description: section content
+        version:
+          type: object
+          description: section version
+        createdAt:
+          type: string
+          description: section createdAt
+        updatedAt:
+          type: string
+          description: section updatedAt
+    User:
+      type: object
+      required:
+        - email
+        - firstname
+        - lastname
+        - username
+        - password
+        - refreshToken
+      properties:
+        email:
+          type: string
+          description: section email
+        firstname:
+          type: string
+          description: section firstname
+        lastname:
+          type: object
+          description: section lastname
+        password:
+          type: string
+          description: section password
+        refreshToken:
+          type: string
+          description: section refreshToken
+
+# Bearer Token Authentication         
+security:
+  - bearerAuth: []
+
+# Route API
+paths:
+  ##############################################################
+  #### Authentication
+  ##############################################################
+
+  # Login Authentication
+  /auth:
+    post:
+      description: Authenticate users to get token access 
+      tags: [Authentication]
+      requestBody:
+        description: login request body
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/loginAuthentication'
+            example:
+              user: mfauzirh
+              pwd: fauzicakepgituloh
+      responses:
+        200:
+          description: Use was successfully authenticated   
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/loginAuthentication'
+        500:
+          description: Server Error
+
+  # Logout Authentication
+  /logout:
+    get:
+      description: Logout authentication request
+      tags: [Authentication]
+      responses:
+        200:
+          description: User was successfully logged out
+        500:
+          description: Server error
+
+  # Refresh Token
+  /refresh:
+    get:
+      description: Refresh token authentication request
+      tags: [Authentication]
+      responses:
+        200:
+          description: Token was successfully refreshed
+        500:
+          description: Server error
+  # Registration Token
+  /register:
+    post:
+      description: Register Account authentication request
+      tags: [Authentication]
+      requestBody:
+        description: register request body
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/registerAuthentication'
+            example:
+              firstname: muhammad
+              lastname: azhar
+              username: zharmedia
+              password: azhar123
+              email: azhar123@gmail.com
+      responses:
+        200:
+          description: User was successfully registered
+        500:
+          description: Server error
+
+  ##############################################################
+  #### Users
+  ##############################################################
+
+  /users:
+    get:
+      description: Get All Users data 
+      tags: [Users]
+      responses:
+        '200':
+          description: User was successfully retrieved 
+    put:
+      security:
+        - bearerAuth: []
+      description: Edit User
+      tags: [Users]
+      requestBody:
+          description: Edit User request body
+          required: true
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+              example:
+                  id: 6411e95fe9c4b1e32435fa3c
+                  email: mfauzirh@gmail.com
+                  firstname: Muhammad
+                  lastname: Fauzi Rizki Hamdalah
+                  username: mfauzirh
+                  oldPassword: fauzicakepgituloh
+                  newPassword: fauzicakepgituloh1
+                  profilePicture: unsplash.com
+      responses:
+        200:
+          description: User was successfully modified
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        500:
+          description: Server error
+    
+    delete:
+      security:
+        - bearerAuth: []
+      description: Delete User
+      tags: [Users]
+      requestBody:
+          description: Delete User request body
+          required: true
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+              example:
+                  id: 64244ddf5698fd0127ff5360
+      responses:
+        200:
+          description: User was successfully deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        500:
+          description: Server error
+
+  /users/{id}:
+    get:
+      description: Get User by id
+      tags: [Users]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type : string
+          examples:
+            id:
+              summary: Users id
+              value: 64244ddf5698fd0127ff5360
+      responses:
+        '200':
+          description: User was successfully retrieved by id
+  
+  /users/{username}:
+    get:
+      description: Get User by username
+      tags: [Users]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type : string
+          examples:
+            id:
+              summary: Users username
+              value: mfauzirh
+      responses:
+        '200':
+          description: User was successfully retrieved by username
+
+  ##############################################################
+  #### Documentations
+  ##############################################################
+
+  # Documentation
+  /documentations:
+    get:
+      description: Get all Documentations content
+      tags: [Documentations]
+      responses:
+        '200':
+          description: Documentation was successfully retrieved
+
+    post:
+      security:
+        - bearerAuth: []
+      description: Create a new documentation
+      tags: [Documentations]
+      requestBody:
+          description: Create a new documentation request body
+          required: true
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Documentation'
+              example:
+                  title: CMS Documentations
+                  footer: <p>Copyright Invite CSS 2022</p>
+                  description: Invite CSS documentation page
+                  githubLink: https://github.com
+                  logo: /assets/images/invitecss.png
+                  logoLink: [{link: https://github.com/linkCategory: github}]
+                  content: [{version: 1.2, chapter: {title: getting started}}]
+      responses:
+        200:
+          description: Documentation was successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Documentation'
+        500:
+          description: Server error
+    
+    put:
+      security:
+        - bearerAuth: []
+      description: Edit Documentations by id
+      tags: [Documentations]
+      requestBody:
+          description: Edit Documentations by id request body
+          required: true
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Documentation'
+              example:
+                  _id: {$oid: 63f2e040d23b3e9d5bfe0c50}
+                  title: CMS Documentations
+                  footer: <p>Copyright Invite CSS 2022</p>
+                  description: Invite CSS documentation page
+                  githubLink: https://github.com
+                  logo: /assets/images/invitecss.png
+                  logoLink: [{link: https://github.com/, linkCategory: github}]
+      responses:
+        200:
+          description: Documentation was successfully modified
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Documentation'
+        500:
+          description: Server error
+    
+    delete:
+      security:
+        - bearerAuth: []
+      description: Delete Documentations by id
+      tags: [Documentations]
+      requestBody:
+          description: Delete documentation by id
+          required: true
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Documentation'
+              example:
+                  id: 63f2e040d23b3e9d5bfe0c50
+      responses:
+        200:
+          description: Documentation was successfully deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Documentation'
+        500:
+          description: Server error
+
+  # Version
+  /documentations/version:
+    get:
+      description: Get all versions of documentation
+      tags: [Documentations]
+      responses:
+        '200':
+          description: Version of documentation was successfully retrieved 
+  # Metadata
+  /documentations/metadata:
+    get:
+      description: Get all metadata of documentation
+      tags: [Documentations]
+      responses:
+        '200':
+          description: Metadata of documentation was successfully retrieved
+  
+  ##############################################################
+  #### Chapters
+  ##############################################################
+
+  /chapters:
+    get:
+      description: Get all chapters data
+      tags: [Chapters]
+      responses:
+        '200':
+          description: Chapters data was successfully retrieved
+    
+    post:
+      security:
+        - bearerAuth: []
+      description: Create a new chapter 
+      tags: [Chapters]
+      requestBody:
+          description: Create a new chapter request body  
+          required: true
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Chapter'
+              example:
+                  title: Chapeter Baru Lho2
+                  documentation: 636de308766ae4515fc2117f
+                  version: [ver1.1]
+      responses:
+        200:
+          description: Chapters data was successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Chapter'
+        500:
+          description: Server error
+    
+    put:
+      security:
+        - bearerAuth: []
+      description: Edit Chapter by id
+      tags: [Chapters]
+      requestBody:
+          description: Edit Chapter request body
+          required: true
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Chapter'
+              example:
+                  id: 63f2e96c2b33fa161e141270
+                  title: Chapeter Baru Lho12
+                  documentation: 636de308766ae4515fc2117f
+                  version: [ver1.1]
+      responses:
+        200:
+          description: Chapter was successfully modified
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Chapter'
+        500:
+          description: Server error
+    
+    delete:
+      security:
+        - bearerAuth: []
+      description: Delete Chapter
+      tags: [Chapters]
+      requestBody:
+          description: Delete Chapter request body
+          required: true
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Chapter'
+              example:
+                  id: 63f2e96c2b33fa161e141270
+                  version: [ver1.1]
+      responses:
+        200:
+          description: Chapter was successfully deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Chapter'
+        500:
+          description: Server error
+
+  /chapters/{id}:
+    get:
+      description: Get Chapter by id
+      tags: [Chapters]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type : string
+          examples:
+            id:
+              summary: Chapters id
+              value: 638635fb846002acad08cc87
+      responses:
+        '200':
+          description: Chapter has been successfully retrieved by id
+
+  ##############################################################
+  #### Sections
+  ##############################################################
+
+  /sections:
+    get:
+      description: Get All Sections data 
+      tags: [Sections]
+      responses:
+        '200':
+          description: Section was successfully retrieved
+    
+    post:
+      security:
+        - bearerAuth: []
+      description: Create a new Section 
+      tags: [Sections]
+      requestBody:
+          description: Create a new Section request body
+          required: true
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Section'
+              example:
+                  title: NEW SECTIONS
+                  content: <h1>Customize</h1><p>Learn how to theme, customize, and extend Bootst
+                  version: [ver1.1]
+      responses:
+        200:
+          description: Section was successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Section'
+        500:
+          description: Server error
+    
+    put:
+      security:
+        - bearerAuth: []
+      description: Edit Section
+      tags: [Sections]
+      requestBody:
+          description: Edit Section request body
+          required: true
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Section'
+              example:
+                  id: 63ffda58db357bdc26c3e304
+                  title: TEST2
+                  content: <h1>Customize</h1><p>Learn how to theme, customize, and extend Bootst
+      responses:
+        200:
+          description: Section was successfully modified
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Section'
+        500:
+          description: Server error
+    
+    delete:
+      security:
+        - bearerAuth: []
+      description: Delete Section
+      tags: [Sections]
+      requestBody:
+          description: Delete Section request body
+          required: true
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Section'
+              example:
+                  id: 63ffd9b1d5465d685923519e
+      responses:
+        200:
+          description: Section was successfully deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Section'
+        500:
+          description: Server error
+
+  /sections/{id}:
+    get:
+      description: Get Section by id
+      tags: [Sections]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type : string
+          examples:
+            id:
+              summary: Sections id
+              value: 63ffda58db357bdc26c3e304
+      responses:
+        '200':
+          description: Section was successfully retrieved by id
+
+  ##############################################################
+  #### Versioning
+  ##############################################################
+
+  /versioning/create: 
+    put:
+      security:
+        - bearerAuth: []
+      description: Create a new version
+      tags: [Versionings]
+      requestBody:
+          description: Create a new version request body
+          required: true
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Section'
+      responses:
+        200:
+          description: Version was successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Section'
+        500:
+          description: Some server error
+
+  /versioning/edit: 
+    put:
+      security:
+        - bearerAuth: []
+      description: Edit version
+      tags: [Versionings]
+      requestBody:
+          description: Edit version request body
+          required: true
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Section'
+      responses:
+        200:
+          description: Version was successfully modified
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Section'
+        500:
+          description: Server error
+
+  /versioning/delete: 
+    put:
+      security:
+        - bearerAuth: []
+      description: Delete version
+      tags: [Versionings]
+      requestBody:
+          description: Delete version requst body
+          required: true
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Section'
+      responses:
+        200:
+          description: Version was successfully deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Section'
+        500:
+          description: Server error
+
+  /versioning/reorder: 
+    put:
+      security:
+        - bearerAuth: []
+      description: Reorder version
+      tags: [Versionings]
+      requestBody:
+          description: Reorder version request body
+          required: true
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Section'
+      responses:
+        200:
+          description: Version was successfully reordered
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Section'
+        500:
+          description: Server error
+
+  /versioning/section: 
+    put:
+      security:
+        - bearerAuth: []
+      description: Edit version in section
+      tags: [Versionings]
+      requestBody:
+          description: Edit version in section request body
+          required: true
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Section'
+      responses:
+        200:
+          description: Section version was successfully modified
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Section'
+        500:
+          description: Server error
+
+  /versioning/section/delete: 
+    put:
+      security:
+        - bearerAuth: []
+      description: Delete version in setion 
+      tags: [Versionings]
+      requestBody:
+          description: Delete version in setion  request body
+          required: true
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Section'
+      responses:
+        200:
+          description: Version in section was successfully deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Section'
+        500:
+          description: Server error
+
+  /versioning/chapter: 
+    put:
+      security:
+        - bearerAuth: []
+      description: Edit version in chapter 
+      tags: [Versionings]
+      requestBody:
+          description: Edit version in chapter request body
+          required: true
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Section'
+      responses:
+        200:
+          description: Chapter version was successfully modified
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Section'
+        500:
+          description: Server error
+
+  /versioning/chapter/delete: 
+    put:
+      security:
+        - bearerAuth: []
+      description: Delete version in chapter
+      tags: [Versionings]
+      requestBody:
+          description: Delete version in chapter request body
+          required: true
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Section'
+      responses:
+        200:
+          description: Chapters version was deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Section'
+        500:
+          description: Server error

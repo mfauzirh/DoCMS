@@ -1,0 +1,100 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&display=swap');
+
+:root {
+    --font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+    --primary-dark: #181C32;
+    --primary-dark-lighter: #363a48;
+    --primary-blue-lighter: #2A4365;
+    --primary-dark-transparant: #rgba(24, 28, 50, 0.5);
+    --primary-purple: #939AFF;
+    --primary-gray: #8B949E;
+    --primary-light: #FFFFFF;
+
+    --secondary-blue: #00E0FF;
+    --secondary-purple: #FF00D6;
+    --secondary-purple-darker: #939AFF;
+}
+
+html {
+    scroll-behavior: smooth
+}
+
+body,
+body * {
+    font-family: 'Inter', sans-serif;
+}
+
+.v-pagination__item,
+.v-pagination__navigation {
+    background-color: var(--primary-dark-lighter) !important;
+}
+
+.v-pagination__item--active {
+    background-color: var(--secondary-purple-darker) !important;
+}
+
+.v-pagination__more {
+    color: white;
+}
+
+.v-btn {
+    text-transform: none !important;
+    letter-spacing: normal !important;
+}
+
+/* Quil Editor */
+.quillWrapper {
+    background-color: #37404D;
+    color: white;
+}
+
+.quillWrapper .ql-toolbar {
+    background-color: white;
+}
+
+.quillWrapper .ql-toolbar>svg {
+    border: 1px solid red !important;
+}
+
+.linear-wipe {
+    --bg-size: 400%;
+    font-weight: bold;
+    background: linear-gradient(90deg,
+            var(--secondary-purple),
+            var(--secondary-blue),
+            var(--secondary-purple)) 0 0 / var(--bg-size) 100%;
+    color: transparent;
+    background-clip: text;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .linear-wipe {
+        animation: move-bg 8s linear infinite;
+    }
+
+    @keyframes move-bg {
+        to {
+            background-position: var(--bg-size) 0;
+        }
+    }
+}
+
+.animated-gradient {
+    background: repeating-linear-gradient(to right, var(--secondary-purple) 0%, var(--secondary-blue) 50%, var(--secondary-purple) 100%);
+    width: 200px;
+    background-size: 200% auto;
+    background-position: 0 100%;
+    animation: gradient 2s infinite;
+    animation-fill-mode: forwards;
+    animation-timing-function: linear;
+}
+
+@keyframes gradient {
+    0% {
+        background-position: 0 0;
+    }
+
+    100% {
+        background-position: -200% 0;
+    }
+}
