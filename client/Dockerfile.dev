@@ -1,9 +1,17 @@
-FROM node:alpine as dev
+FROM node:16-alpine as dev
 
-WORKDIR /usr/src/app
+WORKDIR /app
 
-COPY package.json .
+ENV PATH /app/node_modules/.bin:$PATH
+
+COPY package*.json ./
+
 RUN npm install --legacy-peer-deps
 
+RUN npm install -g @vue/cli
+
 COPY . .
+
+EXPOSE 8080
+
 CMD npm run serve

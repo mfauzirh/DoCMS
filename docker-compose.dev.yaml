@@ -4,25 +4,24 @@ services:
   backend:
     build: 
       context: ./server
-      dockerfile: Dockerfile
-      args: 
-        - NODE_ENV=development
+      dockerfile: Dockerfile.dev
     volumes:
       - ./server:/app
       - /app/node_modules
     environment:
       - NODE_ENV=development
   
-  frontend:
-    build:
-      context: ./client
-      dockerfile: Dockerfile.dev
-      args:
-        - NODE_ENV=development
-    ports:
-      - "8080:8080"
-    environment:
-      - NODE_ENV=development
+  # frontend:
+  #   build:
+  #     context: ./client
+  #     dockerfile: Dockerfile.dev
+  #   ports:
+  #     - "8080:8080"
+  #   volumes:
+  #     - ./client:/app
+  #     - /app/node_modules
+  #   environment:
+  #     - NODE_ENV=development
    
   mongodb:
     image: mongo

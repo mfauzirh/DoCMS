@@ -10,12 +10,12 @@ services:
       - mongodb
     restart: unless-stopped
   
-  frontend:
-    env_file:
-      - ./client/.env
-    depends_on:
-      - backend
-    restart: unless-stopped
+  # frontend:
+  #   env_file:
+  #     - ./client/.env
+  #   depends_on:
+  #     - backend
+  #   restart: unless-stopped
   
   mongodb:
     image: mongo
