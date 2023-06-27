@@ -1,0 +1,23 @@
+version: "3"
+
+services:
+  node_app:
+    ports:
+      - "3500:3500"
+    env_file:
+      - ./server/.env
+    depends_on:
+      - mongodb
+    restart: unless-stopped
+  
+  mongodb:
+    image: mongo
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=docms
+      - MONGO_INITDB_ROOT_PASSWORD=s3cr3tp455
+    volumes:
+      - docms_mongo_data:/data/db
+    restart: always
+
+volumes:
+  docms_mongo_data:

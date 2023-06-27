@@ -8,7 +8,7 @@ const usersDB = async () => {
             useNewUrlParser: true,
             useUnifiedTopology: true,
         })
-        return client.db('cms_docs').collection('users')
+        return client.db('docms').collection('users')
     } catch (err) {
         console.error('Error connecting to MongoDB: ', err);
         setTimeout(usersDB, 5000);
