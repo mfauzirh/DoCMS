@@ -1,0 +1,30 @@
+version: "3"
+
+services:
+  backend:
+    build: 
+      context: ./server
+      dockerfile: Dockerfile
+      args: 
+        - NODE_ENV=development
+    volumes:
+      - ./server:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+  
+  frontend:
+    build:
+      context: ./client
+      dockerfile: Dockerfile.dev
+      args:
+        - NODE_ENV=development
+    ports:
+      - "8080:8080"
+    environment:
+      - NODE_ENV=development
+   
+  mongodb:
+    image: mongo
+    ports:
+      - "27018:27017"
